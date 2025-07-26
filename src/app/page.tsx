@@ -1,6 +1,40 @@
+'use client'
+
 import Image from "next/image"
+import { useMemo, useState } from "react";
+
+interface Agricultores {
+  id: number,
+  nome: string,
+  cpf: string,
+  data: string,
+  celular: string,
+  ativo: boolean
+}
 
 export default function Home() {
+  const [agricultores] = useState<Agricultores[]>([
+    { id: 1, nome: "Peres", cpf: "teste", data: "", celular: "", ativo: false },
+    { id: 2, nome: "Peres", cpf: "teste", data: "", celular: "", ativo: true }
+  ])
+  const [pesquisa,setPesquisa] = useState<string>("")
+
+  const AgricultoresFiltrados = useMemo(() => {
+    const termoPesquisado = pesquisa.toLowerCase()
+    
+    return agricultores.filter(item => {
+      const valores = `
+        ${item.nome.toLowerCase()}
+        ${item.cpf.toLowerCase()}
+        ${item.data.toLowerCase()}
+        ${item.celular.toLowerCase()}
+      `
+
+      return valores.includes(termoPesquisado)
+    })
+
+  }, [agricultores, pesquisa])
+
   return (
     <div className="flex absolute w-full h-full overflow-hidden items-center justify-center">
       <main className="flex absolute w-[80vw] h-[80vh] bg-[#F4F7FC] rounded-[1vw]"> 
@@ -14,7 +48,7 @@ export default function Home() {
               height={12}
               priority
             />
-            <input type="text" placeholder="Pesquise aqui" className="absolute w-[12vw] left-[2vw] text-[#A1A9B8] text-[.8vw] outline-none" />
+            <input type="text" placeholder="Pesquise aqui" className="absolute w-[12vw] left-[2vw] text-[#A1A9B8] text-[.8vw] outline-none" value={pesquisa} onChange={(e) => setPesquisa(e.target.value)} />
           </div>
 
           <button className="flex relative w-[10vw] h-[3vh] bg-[#2264E5] rounded-[.5vw] text-[#FFFFFF] text-[.8vw] items-center justify-center hover:scale-110">Adicionar Agricultor</button>
@@ -33,13 +67,18 @@ export default function Home() {
             </thead>
 
             <tbody className= "max-h-[67vh] h-auto text-[#464F60] text-[.7vw] text-center bg-[#FFFFFF] overflow-auto">
-              <tr className="relative h-[2.5vw] ">
-                <td>Peres</td>
-                <td>Peres</td>
-                <td>Peres</td>
-                <td>Peres</td>
-                <td>Peres</td>
-              </tr>
+              {AgricultoresFiltrados.map((item) => {
+
+                return (
+                  <tr key={item.id} className="relative h-[2.5vw] border-b-[#E9EDF5] border-b-[.1vw]">
+                    <td>{item.nome}</td>
+                    <td>{item.cpf}</td>
+                    <td>{item.data}</td>
+                    <td>{item.celular}</td>
+                    <td>{item.ativo}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
