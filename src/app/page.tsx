@@ -20,7 +20,7 @@ export default function Home() {
   const [adicionar,setAdicionar] = useState<boolean>(false)
   const [texto,setTexto] = useState<string>("")
   const [usuario,setUsuario] = useState({ nome: "", cpf: "", data: "", celular: "" })
-  const [alterar,setAlterar] = useState({ id: 0, tipo: "" })
+  const [alterar,setAlterar] = useState({ cpf: "", tipo: "" })
 
   function formatCPF(value: string) {
     const numericValue = value.replace(/\D/g, "");
@@ -56,26 +56,48 @@ export default function Home() {
     }
   }
 
-  const alterarDados = (id: number, tipo: keyof Agricultores) => {
+  const alterarDados = (id: string, tipo: keyof Agricultores) => {
     setMenu(true)
-    setAlterar({ id: id, tipo: tipo })
+    setAlterar({ cpf: id, tipo: tipo })
   }
 
   const confirmarMenu = async () => {
+    let tipo = ""
+
+    if (alterar.tipo === "nome") {
+      tipo = "fullName"
+    } else if (alterar.tipo === "data") {
+      tipo = "birthDate" 
+    } else if (alterar.tipo === "celular") {
+      tipo = "phone"
+    } else if (alterar.tipo === "cpf") {
+      tipo = "cpf"
+    }
+
+    await fetch('api/agricultores', {
+      method: "PUT",
+      body: JSON.stringify({
+        cpf: alterar.cpf,
+        tipo: tipo,
+        texto: texto
+      })
+    })
+
     setAgricultores((prevDados) => 
       prevDados.map((item) =>
-        item.id === alterar.id ? { ...item, [alterar.tipo]: texto } : item
+        item.cpf === alterar.cpf ? { ...item, [alterar.tipo]: texto } : item
       )
     )
 
     setMenu(false)
     setTexto("")
+    setAlterar({ cpf: "", tipo: "" })
   }
 
   const cancelarMenu = () => {
     setMenu(false)
     setTexto("")
-    setAlterar({ id: 0, tipo: "" })
+    setAlterar({ cpf: "", tipo: "" })
   }
 
   const alterarCriar = (tipo: string, texto: string) => {
@@ -231,7 +253,7 @@ export default function Home() {
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
                         <div className="relative">{item.nome}</div>
                         <Image
-                          onClick={() => alterarDados(item.id,"nome")}
+                          onClick={() => alterarDados(item.cpf,"nome")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"
@@ -246,7 +268,7 @@ export default function Home() {
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
                         <div className="relative">{item.data}</div>
                         <Image
-                          onClick={() => alterarDados(item.id,"data")}
+                          onClick={() => alterarDados(item.cpf,"data")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"
@@ -260,7 +282,7 @@ export default function Home() {
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
                         <div className="relative">{item.celular}</div>
                         <Image
-                          onClick={() => alterarDados(item.id,"celular")}
+                          onClick={() => alterarDados(item.cpf,"celular")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"

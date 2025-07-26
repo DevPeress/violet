@@ -20,35 +20,35 @@ export async function GET() {
 
 export async function PUT(req: Request) {
     const body = await req.json();
-    const { cpf, tipo, texto } = body as { cpf: string, tipo: string, texto: string }
+    const { cpf, tipo, texto } = body as { cpf: string; tipo: string; texto: string };
 
     try {
         const conta = await prisma.user.findUnique({
-            where: { cpf: cpf }
-        })
+        where: { cpf },
+        });
 
-        if (!conta) return NextResponse.json({ message: "Erro ao encontrar dados!" }, { status: 200 })
-
-        const dadosAlterados = { ...conta, [tipo]: texto }
+        if (!conta) return NextResponse.json({ message: "Erro ao encontrar dados!" }, { status: 404 });
 
         const update = await prisma.user.update({
-            where: { cpf: cpf },
+            where: { cpf },
             data: { 
-                fullName: dadosAlterados.fullName,
-                cpf: dadosAlterados.cpf,
-                phone: dadosAlterados.phone,
-                birthDate: dadosAlterados.birthDate
+                [tipo]: texto 
             }
         })
 
-        return update
-    } catch(error) {
-        console.error("[PUT]: ",error)
-        return NextResponse.json({ message: "Erro ao alterar dados!" }, { status: 200 })
+        if (update) {
+        return new NextResponse(null, { status: 200 });
+        } else {
+        return NextResponse.json({ message: "Erro ao editar os dados!" }, { status: 400 });
+        }
+    } catch (error) {
+        console.error("[PUT]: ", error);
+        return NextResponse.json({ message: "Erro ao alterar dados!" }, { status: 500 });
     } finally {
-        prisma.$disconnect()
+        await prisma.$disconnect();
     }
 }
+
 
 export async function POST(req: Request) {
     const body = await req.json();
