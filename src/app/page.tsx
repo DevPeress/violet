@@ -18,6 +18,9 @@ export default function Home() {
     { id: 2, nome: "Peres", cpf: "teste", data: "10/03/2004", celular: "", ativo: true }
   ])
   const [pesquisa,setPesquisa] = useState<string>("")
+  const [menu,setMenu] = useState<boolean>(false)
+  const [texto,setTexto] = useState<string>("")
+  const [alterar,setAlterar] = useState({ id: 0, tipo: "" })
 
   function formatCPF(value: string) {
     const numericValue = value.replace(/\D/g, "");
@@ -31,12 +34,25 @@ export default function Home() {
     })
   }
 
-  const alterarDados =  async (id: number, tipo: keyof Agricultores) => {
+  const alterarDados = (id: number, tipo: keyof Agricultores) => {
+    setMenu(true)
+    setAlterar({ id: id, tipo: tipo })
+  }
+
+  const confirmarMenu = async () => {
     setAgricultores((prevDados) => 
       prevDados.map((item) =>
-        item.id === id ? { ...item, [tipo]: "Texto" } : item
+        item.id === alterar.id ? { ...item, [alterar.tipo]: texto } : item
       )
     )
+
+    setMenu(false)
+    setTexto("")
+  }
+
+  const cancelarMenu = () => {
+    setMenu(false)
+    setTexto("")
   }
 
   const AgricultoresFiltrados = useMemo(() => {
@@ -57,7 +73,17 @@ export default function Home() {
 
   return (
     <div className="flex absolute w-full h-full overflow-hidden items-center justify-center">
-      <main className="flex absolute w-[80vw] h-[80vh] bg-[#F4F7FC] rounded-[1vw]"> 
+      <main className="flex absolute w-[80vw] h-[80vh] bg-[#F4F7FC] rounded-[1vw] items-center- justify-center"> 
+        {menu ? 
+          <div className="flex absolute top-0 bottom-0 m-auto w-[12vw] h-[18vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw]">
+            <h1 className="absolute top-[2vh] text-[1vw]">Alterar Informação</h1>
+            <input className="absolute w-[10vw] h-[4vh] top-[6vh] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira a informação" value={texto} onChange={(e) => setTexto(e.target.value)} /> 
+            <div className="flex absolute w-[10vw] h-[4vh] top-[12vh] items-center justify-between">
+              <button className="relative flex w-[4vw] h-full bg-[#86EFAC] text-white text-[.75vw] items-center justify-center rounded-[.25vw] hover:bg-[#16A34A]" onClick={confirmarMenu}>Confirmar</button>
+              <button className="relative flex w-[4vw] h-full bg-[#FCA5A5] text-black text-[.75vw] items-center justify-center rounded-[.25vw] hover:bg-[#DC2626]" onClick={cancelarMenu}>Cancelar</button>
+            </div>
+          </div>
+        : <></>}
         <div className="flex absolute w-full h-[10vh] top-0 items-center justify-center gap-[40vw]">
           <div className="flex relative w-[15vw] h-[3vh] bg-[#FFFFFF] rounded-[.5vw] items-center justify-center">
             <Image
@@ -136,7 +162,7 @@ export default function Home() {
                     </td>
                     <td className="h-full">
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
-                        {item.ativo ? "Ativo" : "Dispensado"}
+                        {item.ativo ? "Ativo" : ""}
                         {item.ativo ? <></> : 
                           <Image
                             onClick={() => excluirFuncionario(item.id)}
