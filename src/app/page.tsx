@@ -31,6 +31,14 @@ export default function Home() {
     })
   }
 
+  const alterarDados =  async (id: number, tipo: keyof Agricultores) => {
+    setAgricultores((prevDados) => 
+      prevDados.map((item) =>
+        item.id === id ? { ...item, [tipo]: "Texto" } : item
+      )
+    )
+  }
+
   const AgricultoresFiltrados = useMemo(() => {
     const termoPesquisado = pesquisa.toLowerCase()
     
@@ -87,6 +95,7 @@ export default function Home() {
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
                         <div className="relative">{item.nome}</div>
                         <Image
+                          onClick={() => alterarDados(item.id,"nome")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"
@@ -101,6 +110,7 @@ export default function Home() {
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
                         <div className="relative">{item.data}</div>
                         <Image
+                          onClick={() => alterarDados(item.id,"data")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"
@@ -114,6 +124,7 @@ export default function Home() {
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
                         <div className="relative">{item.celular}</div>
                         <Image
+                          onClick={() => alterarDados(item.id,"celular")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"
