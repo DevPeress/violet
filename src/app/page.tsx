@@ -53,6 +53,7 @@ export default function Home() {
   const cancelarMenu = () => {
     setMenu(false)
     setTexto("")
+    setAlterar({ id: 0, tipo: "" })
   }
 
   const AgricultoresFiltrados = useMemo(() => {
