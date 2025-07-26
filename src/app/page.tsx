@@ -186,7 +186,7 @@ export default function Home() {
       <main className="flex absolute w-[80vw] h-[80vh] bg-[#F4F7FC] rounded-[1vw] items-center- justify-center"> 
 
         {menu ? 
-          <div className="flex absolute top-0 bottom-0 m-auto w-[12vw] h-[18vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw]">
+          <div className="flex absolute top-0 bottom-0 m-auto w-[12vw] h-[18vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw] z-1000">
             <h1 className="absolute top-[2vh] text-[1vw]">Alterar Informação</h1>
             <input className="absolute w-[10vw] h-[4vh] top-[6vh] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira a informação" value={texto} onChange={(e) => setTexto(e.target.value)} /> 
             <div className="flex absolute w-[10vw] h-[4vh] top-[12vh] items-center justify-between">
@@ -197,7 +197,7 @@ export default function Home() {
         : <></>}
 
         {adicionar ? 
-          <div className="flex absolute top-0 bottom-0 m-auto w-[25vw] h-[25vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw]">
+          <div className="flex absolute top-0 bottom-0 m-auto w-[25vw] h-[25vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw] z-1000">
             <h1 className="absolute top-[2vh] text-[1vw]">Adicionar Agricultor</h1>
             <div className="flex absolute top-[6vh] w-[24vw] h-[20vh] items-center justify-center">
               <input className="absolute w-[10vw] h-[4vh] top-[1vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Nome" value={usuario.fullName} onChange={(e) => alterarCriar("fullName",e.target.value)} /> 
