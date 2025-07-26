@@ -13,7 +13,7 @@ interface Agricultores {
 }
 
 export default function Home() {
-  const [agricultores] = useState<Agricultores[]>([
+  const [agricultores,setAgricultores] = useState<Agricultores[]>([
     { id: 1, nome: "Peres", cpf: "52773467833", data: "10/03/2004", celular: "11955992605", ativo: false },
     { id: 2, nome: "Peres", cpf: "teste", data: "10/03/2004", celular: "", ativo: true }
   ])
@@ -23,6 +23,12 @@ export default function Home() {
     const numericValue = value.replace(/\D/g, "");
 
     return numericValue.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2") .replace(/(\d{3})(\d{1,2})$/, "$1-$2"); 
+  }
+
+  const excluirFuncionario = (id: number) => {
+    setAgricultores((prevDados) => {
+      return prevDados.filter((item) => item.id !== id);
+    })
   }
 
   const AgricultoresFiltrados = useMemo(() => {
@@ -119,15 +125,18 @@ export default function Home() {
                     </td>
                     <td className="h-full">
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
-                        <div>A</div>
-                        <Image
-                          className="relative hover:scale-110"
-                          src={'/Caneta.svg'}
-                          alt="Editar dados"
-                          width={14}
-                          height={14}
-                          priority
-                        />
+                        {item.ativo ? "Ativo" : "Dispensado"}
+                        {item.ativo ? <></> : 
+                          <Image
+                            onClick={() => excluirFuncionario(item.id)}
+                            className="relative hover:scale-110"
+                            src={'/Excluir.svg'}
+                            alt="Excluir dados"
+                            width={14}
+                            height={14}
+                            priority
+                          />
+                        }
                       </div>
                     </td>
                   </tr>
