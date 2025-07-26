@@ -28,10 +28,19 @@ export default function Home() {
     return numericValue.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2") .replace(/(\d{3})(\d{1,2})$/, "$1-$2"); 
   }
 
-  const excluirFuncionario = (id: number) => {
-    setAgricultores((prevDados) => {
-      return prevDados.filter((item) => item.id !== id);
+  const excluirFuncionario = async (id: number, cpf: string) => {
+    const excluir = await fetch('api', {
+      method: "DELETE",
+      body: JSON.stringify({
+        cpf: cpf
+      })
     })
+
+    if (excluir.status === 204) {
+       setAgricultores((prevDados) => {
+        return prevDados.filter((item) => item.id !== id);
+      })
+    }
   }
 
   const alterarDados = (id: number, tipo: keyof Agricultores) => {
@@ -166,7 +175,7 @@ export default function Home() {
                         {item.ativo ? "Ativo" : ""}
                         {item.ativo ? <></> : 
                           <Image
-                            onClick={() => excluirFuncionario(item.id)}
+                            onClick={() => excluirFuncionario(item.id, item.cpf)}
                             className="relative hover:scale-110"
                             src={'/Excluir.svg'}
                             alt="Excluir dados"
