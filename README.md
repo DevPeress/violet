@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌸 Violet
 
-## Getting Started
+Sistema de gerenciamento simples desenvolvido com **Next.js**, **Tailwind CSS** e **Prisma**. Este projeto tem como objetivo permitir o cadastro, edição e visualização de usuários com dados básicos como nome, CPF, telefone e data de nascimento.
 
-First, run the development server:
+## ✨ Funcionalidades
+
+- 📥 Cadastro de usuários
+- 📝 Edição de informações
+- 🗑️ Remoção de registros
+- 🔎 Visualização em tabela
+- 🧠 Backend integrado com Prisma ORM
+- 🛡️ Validações de dados e mensagens de erro
+
+## 🧰 Tecnologias Utilizadas
+
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Prisma ORM](https://www.prisma.io/)
+- [MongoDB](https://www.mongodb.com/)
+- [React Hook Form](https://react-hook-form.com/)
+- [React Hot Toast](https://react-hot-toast.com/)
+
+## 🚀 Como rodar localmente
 
 ```bash
+# Clone o repositório
+git clone https://github.com/DevPeress/violet
+
+# Acesse a pasta
+cd violet
+
+# Instale as dependências
+npm install
+
+# Configure o banco de dados
+# Edite o arquivo .env com sua DATABASE_URL do MongoDB
+
+# Rode as migrations
+npx prisma db push
+
+# Inicie o servidor
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🗂️ Estrutura do Projeto
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+violet/
+├── app/
+│   ├── page.tsx
+│   ├── api/
+│   │   └── users/ (CRUD)
+├── components/
+│   ├── Table.tsx
+│   └── Form.tsx
+├── lib/
+│   └── prisma.ts
+├── styles/
+├── prisma/
+│   └── schema.prisma
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📸 Capturas de Tela
 
-## Learn More
+*Adicione aqui prints do sistema para demonstrar as funcionalidades.*
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 Licença
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Este projeto está sob a licença MIT.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Desenvolvido por [@DevPeress](https://github.com/DevPeress) 💜
