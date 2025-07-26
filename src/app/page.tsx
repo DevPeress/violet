@@ -14,10 +14,16 @@ interface Agricultores {
 
 export default function Home() {
   const [agricultores] = useState<Agricultores[]>([
-    { id: 1, nome: "Peres", cpf: "teste", data: "", celular: "", ativo: false },
+    { id: 1, nome: "Peres", cpf: "52773467833", data: "", celular: "", ativo: false },
     { id: 2, nome: "Peres", cpf: "teste", data: "", celular: "", ativo: true }
   ])
   const [pesquisa,setPesquisa] = useState<string>("")
+
+  function formatCPF(value: string) {
+    const numericValue = value.replace(/\D/g, "");
+
+    return numericValue.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2") .replace(/(\d{3})(\d{1,2})$/, "$1-$2"); 
+  }
 
   const AgricultoresFiltrados = useMemo(() => {
     const termoPesquisado = pesquisa.toLowerCase()
@@ -72,7 +78,7 @@ export default function Home() {
                 return (
                   <tr key={item.id} className="relative h-[2.5vw] border-b-[#E9EDF5] border-b-[.1vw]">
                     <td>{item.nome}</td>
-                    <td>{item.cpf}</td>
+                    <td>{formatCPF(item.cpf)}</td>
                     <td>{item.data}</td>
                     <td>{item.celular}</td>
                     <td>{item.ativo}</td>
