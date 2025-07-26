@@ -19,7 +19,9 @@ export default function Home() {
   ])
   const [pesquisa,setPesquisa] = useState<string>("")
   const [menu,setMenu] = useState<boolean>(false)
+  const [adicionar,setAdicionar] = useState<boolean>(true)
   const [texto,setTexto] = useState<string>("")
+  const [usuario,setUsuario] = useState({ nome: "", cpf: "", data: "", celular: "" })
   const [alterar,setAlterar] = useState({ id: 0, tipo: "" })
 
   function formatCPF(value: string) {
@@ -65,6 +67,35 @@ export default function Home() {
     setAlterar({ id: 0, tipo: "" })
   }
 
+  const alterarCriar = (tipo: string, texto: string) => {
+    if (tipo === "cpf") {
+      texto = formatCPF(texto)
+    }
+
+    setUsuario((prevDados) => ({...prevDados, [tipo]: texto}) )
+  }
+
+  const confirmarAgricultor = async () => {
+    const criar = await fetch('api', {
+      method: "POST",
+      body: JSON.stringify({
+        nome: usuario.nome,
+        cpf: usuario.cpf,
+        celular: usuario.celular,
+        data: usuario.data
+      })
+    })
+
+    if (criar.status === 201) {
+      
+    }
+  }
+
+  const cancelarAgricultor = () => {
+    setAdicionar(false)
+    setTexto("")
+  }
+
   const AgricultoresFiltrados = useMemo(() => {
     const termoPesquisado = pesquisa.toLowerCase()
     
@@ -84,6 +115,7 @@ export default function Home() {
   return (
     <div className="flex absolute w-full h-full overflow-hidden items-center justify-center">
       <main className="flex absolute w-[80vw] h-[80vh] bg-[#F4F7FC] rounded-[1vw] items-center- justify-center"> 
+
         {menu ? 
           <div className="flex absolute top-0 bottom-0 m-auto w-[12vw] h-[18vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw]">
             <h1 className="absolute top-[2vh] text-[1vw]">Alterar Informação</h1>
@@ -94,6 +126,23 @@ export default function Home() {
             </div>
           </div>
         : <></>}
+
+        {adicionar ? 
+          <div className="flex absolute top-0 bottom-0 m-auto w-[25vw] h-[25vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw]">
+            <h1 className="absolute top-[2vh] text-[1vw]">Adicionar Agricultor</h1>
+            <div className="flex absolute top-[6vh] w-[24vw] h-[20vh] items-center justify-center">
+              <input className="absolute w-[10vw] h-[4vh] top-[1vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Nome" value={usuario.nome} onChange={(e) => alterarCriar("nome",e.target.value)} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[1vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o CPF" value={usuario.cpf} onChange={(e) => alterarCriar("cpf",e.target.value)} maxLength={15} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[7vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira Data de Nascimento" value={usuario.data} onChange={(e) => alterarCriar("data",e.target.value)} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[7vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Celular" value={usuario.celular} onChange={(e) => alterarCriar("celular",e.target.value)} /> 
+            </div>
+            <div className="flex absolute w-[21vw] h-[4vh] bottom-[2vh] items-center justify-between">
+              <button className="relative flex w-[10vw] h-full bg-[#86EFAC] text-white text-[.75vw] items-center justify-center rounded-[.25vw] hover:bg-[#16A34A]" onClick={confirmarAgricultor}>Confirmar</button>
+              <button className="relative flex w-[10vw] h-full bg-[#FCA5A5] text-black text-[.75vw] items-center justify-center rounded-[.25vw] hover:bg-[#DC2626]" onClick={cancelarAgricultor}>Cancelar</button>
+            </div>
+          </div>
+        : <></>}
+
         <div className="flex absolute w-full h-[10vh] top-0 items-center justify-center gap-[40vw]">
           <div className="flex relative w-[15vw] h-[3vh] bg-[#FFFFFF] rounded-[.5vw] items-center justify-center">
             <Image
@@ -107,7 +156,7 @@ export default function Home() {
             <input type="text" placeholder="Pesquise aqui" className="absolute w-[12vw] left-[2vw] text-[#A1A9B8] text-[.8vw] outline-none" value={pesquisa} onChange={(e) => setPesquisa(e.target.value)} />
           </div>
 
-          <button className="flex relative w-[10vw] h-[3vh] bg-[#2264E5] rounded-[.5vw] text-[#FFFFFF] text-[.8vw] items-center justify-center hover:scale-110">Adicionar Agricultor</button>
+          <button className="flex relative w-[10vw] h-[3vh] bg-[#2264E5] rounded-[.5vw] text-[#FFFFFF] text-[.8vw] items-center justify-center hover:scale-110" onClick={() => setAdicionar(!adicionar)}>Adicionar Agricultor</button>
         </div>
 
         <div className="flex absolute w-full max-h-[70vh] h-auto top-[10vh] overflow-hidden">
@@ -141,7 +190,7 @@ export default function Home() {
                         />
                       </div>
                     </td>
-                    <td>{formatCPF(item.cpf)}</td>
+                    <td>{item.cpf}</td>
                     <td className="h-full">
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
                         <div className="relative">{item.data}</div>
