@@ -49,10 +49,9 @@ export async function PUT(req: Request) {
     }
 }
 
-
 export async function POST(req: Request) {
     const body = await req.json();
-    const { id, nome, cpf, celular, data } = body as { id: number, nome: string, cpf: string, celular: string, data: string }
+    const { id, fullName, cpf, phone, birthDate } = body as { id: number, fullName: string, cpf: string, phone: string, birthDate: string }
     
     try {
         const conta = await prisma.user.findUnique({
@@ -63,10 +62,10 @@ export async function POST(req: Request) {
             const criar = await prisma.user.create({
                 data: {
                     id: id,
-                    fullName: nome,
+                    fullName: fullName,
                     cpf: cpf,
-                    phone: celular,
-                    birthDate: new Date(data)
+                    phone: phone,
+                    birthDate: new Date(birthDate)
                 }
             })
 

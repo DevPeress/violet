@@ -6,11 +6,11 @@ import toast, { Toaster } from "react-hot-toast";
 
 interface Agricultores {
   id: number,
-  nome: string,
+  fullName: string,
   cpf: string,
-  data: string,
-  celular: string,
-  ativo: boolean
+  birthDate: string,
+  phone: string,
+  active: boolean
 }
 
 export default function Home() {
@@ -19,7 +19,7 @@ export default function Home() {
   const [menu,setMenu] = useState<boolean>(false)
   const [adicionar,setAdicionar] = useState<boolean>(false)
   const [texto,setTexto] = useState<string>("")
-  const [usuario,setUsuario] = useState({ nome: "", cpf: "", data: "", celular: "" })
+  const [usuario,setUsuario] = useState({ fullName: "", cpf: "", birthDate: "", phone: "" })
   const [alterar,setAlterar] = useState({ cpf: "", tipo: "" })
 
   function formatCPF(value: string) {
@@ -34,9 +34,9 @@ export default function Home() {
     return numericValue.replace(/(\d{1})(\d)/, "($1$2) ").replace(/(\d{5})(\d)/, "$1-$2")
   }
 
-  function formatarData(dateString: string) {
-    const data = new Date(dateString);
-    return data.toISOString().split('T')[0]; 
+  function formatarbirthDate(dateString: string) {
+    const birthDate = new Date(dateString);
+    return birthDate.toISOString().split('T')[0]; 
   }
 
   const excluirFuncionario = async (id: number, cpf: string) => {
@@ -56,29 +56,34 @@ export default function Home() {
     }
   }
 
-  const alterarDados = (id: string, tipo: keyof Agricultores) => {
-    setMenu(true)
-    setAlterar({ cpf: id, tipo: tipo })
+  const alterarDados = async (id: string, tipo: keyof Agricultores) => {
+    if (tipo === "active") {
+      await fetch('api/agricultores', {
+        method: "PUT",
+        body: JSON.stringify({
+          cpf: id,
+          tipo: "active",
+          texto: !agricultores.find((item) => item.cpf === id)?.active
+        })
+      })
+
+      setAgricultores((prevDados) => 
+        prevDados.map((item) =>
+          item.cpf === id ? { ...item, [tipo]: !item.active } : item
+        )
+      )
+    } else {
+      setMenu(true)
+      setAlterar({ cpf: id, tipo: tipo })
+    }
   }
 
   const confirmarMenu = async () => {
-    let tipo = ""
-
-    if (alterar.tipo === "nome") {
-      tipo = "fullName"
-    } else if (alterar.tipo === "data") {
-      tipo = "birthDate" 
-    } else if (alterar.tipo === "celular") {
-      tipo = "phone"
-    } else if (alterar.tipo === "cpf") {
-      tipo = "cpf"
-    }
-
     await fetch('api/agricultores', {
       method: "PUT",
       body: JSON.stringify({
         cpf: alterar.cpf,
-        tipo: tipo,
+        tipo: alterar.tipo,
         texto: texto
       })
     })
@@ -105,12 +110,12 @@ export default function Home() {
       texto = formatCPF(texto)
     }
 
-    if (tipo === "celular") {
+    if (tipo === "phone") {
       texto = formatNumero(texto)
     }
 
-    if (tipo === "data") {
-      texto = formatarData(texto)
+    if (tipo === "birthDate") {
+      texto = formatarbirthDate(texto)
     }
 
     setUsuario((prevDados) => ({...prevDados, [tipo]: texto}) )
@@ -125,16 +130,16 @@ export default function Home() {
       method: "POST",
       body: JSON.stringify({
         id: agricultores.length + 1,
-        nome: usuario.nome,
+        fullName: usuario.fullName,
         cpf: usuario.cpf,
-        celular: usuario.celular,
-        data: usuario.data
+        phone: usuario.phone,
+        birthDate: usuario.birthDate
       })
     })
 
     if (criar.status === 201) {
-      setAgricultores((prevDados) => [...prevDados, { id: agricultores.length + 1, nome: usuario.nome, cpf: usuario.cpf, data: usuario.data, celular: usuario.celular, ativo: true }]);
-      setUsuario({ nome: "", cpf: "", data: "", celular: "" })
+      setAgricultores((prevDados) => [...prevDados, { id: agricultores.length + 1, fullName: usuario.fullName, cpf: usuario.cpf, birthDate: usuario.birthDate, phone: usuario.phone, active: true }]);
+      setUsuario({ fullName: "", cpf: "", birthDate: "", phone: "" })
       setAdicionar(false)
       return toast.success("Agricultor adicionado!")
     } else {
@@ -152,10 +157,10 @@ export default function Home() {
     
     return agricultores.filter(item => {
       const valores = `
-        ${item.nome.toLowerCase()}
+        ${item.fullName.toLowerCase()}
         ${item.cpf.toLowerCase()}
-        ${item.data.toLowerCase()}
-        ${item.celular.toLowerCase()}
+        ${item.birthDate.toLowerCase()}
+        ${item.phone.toLowerCase()}
       `
 
       return valores.includes(termoPesquisado)
@@ -168,16 +173,7 @@ export default function Home() {
     .then(res => res.json())
     .then(data => {
       if (Array.isArray(data)) {
-        const dados = data.map((item) => ({
-          id: item.id,
-          nome: item.fullName,
-          cpf: item.cpf,
-          data: item.birthDate? item.birthDate : "",
-          celular: item.phone,
-          ativo: item.asctive
-        }))
-
-        setAgricultores(dados)
+        setAgricultores(data)
       }
     })
     .catch((error) => {
@@ -204,10 +200,10 @@ export default function Home() {
           <div className="flex absolute top-0 bottom-0 m-auto w-[25vw] h-[25vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw]">
             <h1 className="absolute top-[2vh] text-[1vw]">Adicionar Agricultor</h1>
             <div className="flex absolute top-[6vh] w-[24vw] h-[20vh] items-center justify-center">
-              <input className="absolute w-[10vw] h-[4vh] top-[1vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Nome" value={usuario.nome} onChange={(e) => alterarCriar("nome",e.target.value)} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[1vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o fullName" value={usuario.fullName} onChange={(e) => alterarCriar("fullName",e.target.value)} /> 
               <input className="absolute w-[10vw] h-[4vh] top-[1vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o CPF" value={usuario.cpf} onChange={(e) => alterarCriar("cpf",e.target.value)} maxLength={15} /> 
-              <input className="absolute w-[10vw] h-[4vh] top-[7vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="date" placeholder="Insira Data de Nascimento" value={usuario.data} onChange={(e) => alterarCriar("data",e.target.value)} /> 
-              <input className="absolute w-[10vw] h-[4vh] top-[7vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Celular" value={usuario.celular} onChange={(e) => alterarCriar("celular",e.target.value)} maxLength={16} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[7vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="date" placeholder="Insira birthDate de Nascimento" value={usuario.birthDate} onChange={(e) => alterarCriar("birthDate",e.target.value)} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[7vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o phone" value={usuario.phone} onChange={(e) => alterarCriar("phone",e.target.value)} maxLength={16} /> 
             </div>
             <div className="flex absolute w-[21vw] h-[4vh] bottom-[2vh] items-center justify-between">
               <button className="relative flex w-[10vw] h-full bg-[#86EFAC] text-white text-[.75vw] items-center justify-center rounded-[.25vw] hover:bg-[#16A34A]" onClick={confirmarAgricultor}>Confirmar</button>
@@ -251,9 +247,9 @@ export default function Home() {
                   <tr key={item.id} className="relative h-[2.5vw] border-b-[#E9EDF5] border-b-[.1vw]">
                     <td className="h-full">
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
-                        <div className="relative">{item.nome}</div>
+                        <div className="relative">{item.fullName}</div>
                         <Image
-                          onClick={() => alterarDados(item.cpf,"nome")}
+                          onClick={() => alterarDados(item.cpf,"fullName")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"
@@ -266,9 +262,9 @@ export default function Home() {
                     <td>{item.cpf}</td>
                     <td className="h-full">
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
-                        <div className="relative">{item.data}</div>
+                        <div className="relative">{item.birthDate}</div>
                         <Image
-                          onClick={() => alterarDados(item.cpf,"data")}
+                          onClick={() => alterarDados(item.cpf,"birthDate")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"
@@ -280,9 +276,9 @@ export default function Home() {
                     </td>
                     <td className="h-full">
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
-                        <div className="relative">{item.celular}</div>
+                        <div className="relative">{item.phone}</div>
                         <Image
-                          onClick={() => alterarDados(item.cpf,"celular")}
+                          onClick={() => alterarDados(item.cpf,"phone")}
                           className="relative hover:scale-110"
                           src={'/Caneta.svg'}
                           alt="Editar dados"
@@ -294,8 +290,16 @@ export default function Home() {
                     </td>
                     <td className="h-full">
                       <div className="flex h-full justify-center items-center gap-[.5vw]">
-                        {item.ativo ? "Ativo" : ""}
-                        {item.ativo ? <></> : 
+                        <Image
+                          onClick={() => alterarDados(item.cpf,"active")}
+                          className="relative hover:scale-110"
+                          src={'/Caneta.svg'}
+                          alt="Editar dados"
+                          width={14}
+                          height={14}
+                          priority
+                        />
+                        {item.active ? <></> : 
                           <Image
                             onClick={() => excluirFuncionario(item.id, item.cpf)}
                             className="relative hover:scale-110"
