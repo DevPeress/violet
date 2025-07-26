@@ -200,8 +200,8 @@ export default function Home() {
           <div className="flex absolute top-0 bottom-0 m-auto w-[25vw] h-[25vh] bg-[#A1A9B8] items-center justify-center rounded-[.5vw]">
             <h1 className="absolute top-[2vh] text-[1vw]">Adicionar Agricultor</h1>
             <div className="flex absolute top-[6vh] w-[24vw] h-[20vh] items-center justify-center">
-              <input className="absolute w-[10vw] h-[4vh] top-[1vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o fullName" value={usuario.fullName} onChange={(e) => alterarCriar("fullName",e.target.value)} /> 
-              <input className="absolute w-[10vw] h-[4vh] top-[1vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o CPF" value={usuario.cpf} onChange={(e) => alterarCriar("cpf",e.target.value)} maxLength={15} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[1vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Nome" value={usuario.fullName} onChange={(e) => alterarCriar("fullName",e.target.value)} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[1vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o CPF" value={usuario.cpf} onChange={(e) => alterarCriar("cpf",e.target.value)} maxLength={14} /> 
               <input className="absolute w-[10vw] h-[4vh] top-[7vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="date" placeholder="Insira birthDate de Nascimento" value={usuario.birthDate} onChange={(e) => alterarCriar("birthDate",e.target.value)} /> 
               <input className="absolute w-[10vw] h-[4vh] top-[7vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o phone" value={usuario.phone} onChange={(e) => alterarCriar("phone",e.target.value)} maxLength={16} /> 
             </div>
