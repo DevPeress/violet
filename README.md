@@ -54,4 +54,95 @@ violet/
 │   └── schema.prisma
 ```
 
+## 📌 Base URL
+
+```
+http://localhost:3000/api
+```
+
+## 🔐 Autenticação
+
+Atualmente, os endpoints **não exigem autenticação**. (Atualize aqui se for implementado JWT, API Key etc.)
+
+## 📁 Endpoints
+
+### ✅ `GET /api/agricultores`
+
+Retorna todos os usuários cadastrados.
+
+#### 🔄 Exemplo de resposta:
+```json
+[
+  {
+    "id": 1,
+    "fullName": "João Silva",
+    "cpf": "123.456.789-11",
+    "phone": "(11) 99999-9999",
+    "birthDate": "2000-01-01T00:00:00.000Z"
+  }
+]
+```
+
+### 📥 `POST /api/agricultores`
+
+Cria um novo usuário.
+
+#### 📦 Body (JSON):
+```json
+{
+  "id": 1,
+  "fullName": "João Silva",
+  "cpf": "123.456.789-11",
+  "phone": "(11) 99999-9999",
+  "birthDate": "2000-01-01"
+}
+```
+
+#### 🔄 Resposta:
+```json
+{
+  "status": 201
+}
+```
+
+### ✏️ `PUT /api/agricultores`
+
+Atualiza os dados de um usuário existente com base no CPF.
+
+#### 📦 Body (JSON):
+```json
+{
+  "cpf": "12345678900",
+  "tipo": "fullName",
+  "texto": "Fabrício"
+}
+```
+
+#### 🔄 Resposta:
+```json
+{
+  "status": 200
+}
+```
+
+### ❌ `DELETE /api/agricultores`
+
+Deleta um usuário com base no CPF.
+
+#### 📦 Body (JSON):
+```json
+{
+  "cpf": "12345678900"
+}
+```
+
+#### 🔄 Resposta:
+```json
+{
+  "status": 204
+}
+```
+
+
+
 Desenvolvido por [@DevPeress](https://github.com/DevPeress) 💜
