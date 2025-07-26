@@ -40,7 +40,7 @@ export default function Home() {
   }
 
   const excluirFuncionario = async (id: number, cpf: string) => {
-    const excluir = await fetch('api', {
+    const excluir = await fetch('api/agricultores', {
       method: "DELETE",
       body: JSON.stringify({
         cpf: cpf
@@ -48,7 +48,7 @@ export default function Home() {
     })
 
     if (excluir.status === 204) {
-       setAgricultores((prevDados) => {
+      setAgricultores((prevDados) => {
         return prevDados.filter((item) => item.id !== id);
       })
 
@@ -115,6 +115,8 @@ export default function Home() {
       setUsuario({ nome: "", cpf: "", data: "", celular: "" })
       setAdicionar(false)
       return toast.success("Agricultor adicionado!")
+    } else {
+      return toast.error(criar.statusText)
     }
   }
 
