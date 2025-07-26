@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { useMemo, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 interface Agricultores {
   id: number,
@@ -19,7 +20,7 @@ export default function Home() {
   ])
   const [pesquisa,setPesquisa] = useState<string>("")
   const [menu,setMenu] = useState<boolean>(false)
-  const [adicionar,setAdicionar] = useState<boolean>(true)
+  const [adicionar,setAdicionar] = useState<boolean>(false)
   const [texto,setTexto] = useState<string>("")
   const [usuario,setUsuario] = useState({ nome: "", cpf: "", data: "", celular: "" })
   const [alterar,setAlterar] = useState({ id: 0, tipo: "" })
@@ -42,6 +43,8 @@ export default function Home() {
        setAgricultores((prevDados) => {
         return prevDados.filter((item) => item.id !== id);
       })
+
+      return toast.success("Agricultor Excluido!")
     }
   }
 
@@ -76,6 +79,9 @@ export default function Home() {
   }
 
   const confirmarAgricultor = async () => {
+    if (usuario.cpf.length <= 14) {
+      return toast.error("CPF inválido!")
+    }
     const criar = await fetch('api', {
       method: "POST",
       body: JSON.stringify({
@@ -242,6 +248,8 @@ export default function Home() {
           </table>
         </div>
       </main>
+
+      <Toaster/>
     </div>
   );
 }
