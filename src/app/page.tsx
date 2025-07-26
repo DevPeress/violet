@@ -122,7 +122,7 @@ export default function Home() {
   }
 
   const confirmarAgricultor = async () => {
-    if (usuario.cpf.length <= 14) {
+    if (usuario.cpf.length <= 13) {
       return toast.error("CPF inválido!")
     }
 
