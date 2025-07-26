@@ -14,8 +14,8 @@ interface Agricultores {
 
 export default function Home() {
   const [agricultores] = useState<Agricultores[]>([
-    { id: 1, nome: "Peres", cpf: "52773467833", data: "", celular: "", ativo: false },
-    { id: 2, nome: "Peres", cpf: "teste", data: "", celular: "", ativo: true }
+    { id: 1, nome: "Peres", cpf: "52773467833", data: "10/03/2004", celular: "11955992605", ativo: false },
+    { id: 2, nome: "Peres", cpf: "teste", data: "10/03/2004", celular: "", ativo: true }
   ])
   const [pesquisa,setPesquisa] = useState<string>("")
 
@@ -49,7 +49,7 @@ export default function Home() {
             <Image
               className="absolute left-[1vw]"
               src={'/Lupa.svg'}
-              alt="Fundo da página"
+              alt="Imagem do Pesquisar"
               width={12}
               height={12}
               priority
@@ -77,11 +77,59 @@ export default function Home() {
 
                 return (
                   <tr key={item.id} className="relative h-[2.5vw] border-b-[#E9EDF5] border-b-[.1vw]">
-                    <td>{item.nome}</td>
+                    <td className="h-full">
+                      <div className="flex h-full justify-center items-center gap-[.5vw]">
+                        <div className="relative">{item.nome}</div>
+                        <Image
+                          className="relative hover:scale-110"
+                          src={'/Caneta.svg'}
+                          alt="Editar dados"
+                          width={14}
+                          height={14}
+                          priority
+                        />
+                      </div>
+                    </td>
                     <td>{formatCPF(item.cpf)}</td>
-                    <td>{item.data}</td>
-                    <td>{item.celular}</td>
-                    <td>{item.ativo}</td>
+                    <td className="h-full">
+                      <div className="flex h-full justify-center items-center gap-[.5vw]">
+                        <div className="relative">{item.data}</div>
+                        <Image
+                          className="relative hover:scale-110"
+                          src={'/Caneta.svg'}
+                          alt="Editar dados"
+                          width={14}
+                          height={14}
+                          priority
+                        />
+                      </div>
+                    </td>
+                    <td className="h-full">
+                      <div className="flex h-full justify-center items-center gap-[.5vw]">
+                        <div className="relative">{item.celular}</div>
+                        <Image
+                          className="relative hover:scale-110"
+                          src={'/Caneta.svg'}
+                          alt="Editar dados"
+                          width={14}
+                          height={14}
+                          priority
+                        />
+                      </div>
+                    </td>
+                    <td className="h-full">
+                      <div className="flex h-full justify-center items-center gap-[.5vw]">
+                        <div>A</div>
+                        <Image
+                          className="relative hover:scale-110"
+                          src={'/Caneta.svg'}
+                          alt="Editar dados"
+                          width={14}
+                          height={14}
+                          priority
+                        />
+                      </div>
+                    </td>
                   </tr>
                 )
               })}
