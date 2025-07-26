@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image"
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 interface Agricultores {
@@ -14,10 +14,7 @@ interface Agricultores {
 }
 
 export default function Home() {
-  const [agricultores,setAgricultores] = useState<Agricultores[]>([
-    { id: 1, nome: "Peres", cpf: "52773467833", data: "10/03/2004", celular: "11955992605", ativo: false },
-    { id: 2, nome: "Peres", cpf: "teste", data: "10/03/2004", celular: "", ativo: true }
-  ])
+  const [agricultores,setAgricultores] = useState<Agricultores[]>([])
   const [pesquisa,setPesquisa] = useState<string>("")
   const [menu,setMenu] = useState<boolean>(false)
   const [adicionar,setAdicionar] = useState<boolean>(false)
@@ -29,6 +26,17 @@ export default function Home() {
     const numericValue = value.replace(/\D/g, "");
 
     return numericValue.replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2") .replace(/(\d{3})(\d{1,2})$/, "$1-$2"); 
+  }
+
+  function formatNumero(value: string) {
+    const numericValue = value.replace(/\D/g, "");
+
+    return numericValue.replace(/(\d{1})(\d)/, "($1$2) ").replace(/(\d{5})(\d)/, "$1-$2")
+  }
+
+  function formatarData(dateString: string) {
+    const data = new Date(dateString);
+    return data.toISOString().split('T')[0]; 
   }
 
   const excluirFuncionario = async (id: number, cpf: string) => {
@@ -75,6 +83,14 @@ export default function Home() {
       texto = formatCPF(texto)
     }
 
+    if (tipo === "celular") {
+      texto = formatNumero(texto)
+    }
+
+    if (tipo === "data") {
+      texto = formatarData(texto)
+    }
+
     setUsuario((prevDados) => ({...prevDados, [tipo]: texto}) )
   }
 
@@ -82,9 +98,11 @@ export default function Home() {
     if (usuario.cpf.length <= 14) {
       return toast.error("CPF inválido!")
     }
-    const criar = await fetch('api', {
+
+    const criar = await fetch('api/agricultores', {
       method: "POST",
       body: JSON.stringify({
+        id: agricultores.length + 1,
         nome: usuario.nome,
         cpf: usuario.cpf,
         celular: usuario.celular,
@@ -93,7 +111,10 @@ export default function Home() {
     })
 
     if (criar.status === 201) {
-      
+      setAgricultores((prevDados) => [...prevDados, { id: agricultores.length + 1, nome: usuario.nome, cpf: usuario.cpf, data: usuario.data, celular: usuario.celular, ativo: true }]);
+      setUsuario({ nome: "", cpf: "", data: "", celular: "" })
+      setAdicionar(false)
+      return toast.success("Agricultor adicionado!")
     }
   }
 
@@ -118,6 +139,28 @@ export default function Home() {
 
   }, [agricultores, pesquisa])
 
+  useEffect(() => {
+    fetch('api/agricultores')
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data)) {
+        const dados = data.map((item) => ({
+          id: item.id,
+          nome: item.fullName,
+          cpf: item.cpf,
+          data: item.birthDate? item.birthDate : "",
+          celular: item.phone,
+          ativo: item.asctive
+        }))
+
+        setAgricultores(dados)
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }, [])
+
   return (
     <div className="flex absolute w-full h-full overflow-hidden items-center justify-center">
       <main className="flex absolute w-[80vw] h-[80vh] bg-[#F4F7FC] rounded-[1vw] items-center- justify-center"> 
@@ -139,8 +182,8 @@ export default function Home() {
             <div className="flex absolute top-[6vh] w-[24vw] h-[20vh] items-center justify-center">
               <input className="absolute w-[10vw] h-[4vh] top-[1vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Nome" value={usuario.nome} onChange={(e) => alterarCriar("nome",e.target.value)} /> 
               <input className="absolute w-[10vw] h-[4vh] top-[1vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o CPF" value={usuario.cpf} onChange={(e) => alterarCriar("cpf",e.target.value)} maxLength={15} /> 
-              <input className="absolute w-[10vw] h-[4vh] top-[7vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira Data de Nascimento" value={usuario.data} onChange={(e) => alterarCriar("data",e.target.value)} /> 
-              <input className="absolute w-[10vw] h-[4vh] top-[7vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Celular" value={usuario.celular} onChange={(e) => alterarCriar("celular",e.target.value)} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[7vh] left-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="date" placeholder="Insira Data de Nascimento" value={usuario.data} onChange={(e) => alterarCriar("data",e.target.value)} /> 
+              <input className="absolute w-[10vw] h-[4vh] top-[7vh] right-[1.5vw] text-center outline-none text-[.8vw] rounded-[.25vw] bg-[#FFFFFF]" type="text" placeholder="Insira o Celular" value={usuario.celular} onChange={(e) => alterarCriar("celular",e.target.value)} maxLength={16} /> 
             </div>
             <div className="flex absolute w-[21vw] h-[4vh] bottom-[2vh] items-center justify-between">
               <button className="relative flex w-[10vw] h-full bg-[#86EFAC] text-white text-[.75vw] items-center justify-center rounded-[.25vw] hover:bg-[#16A34A]" onClick={confirmarAgricultor}>Confirmar</button>
