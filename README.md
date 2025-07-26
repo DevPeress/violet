@@ -6,7 +6,7 @@ Sistema de gerenciamento simples desenvolvido com **Next.js**, **Tailwind CSS** 
 
 - 📥 Cadastro de usuários
 - 📝 Edição de informações
-- 🗑️ Remoção de registros
+- 🗑️ Remoção de usuários
 - 🔎 Visualização em tabela
 - 🧠 Backend integrado com Prisma ORM
 - 🛡️ Validações de dados e mensagens de erro
@@ -49,25 +49,9 @@ violet/
 ├── app/
 │   ├── page.tsx
 │   ├── api/
-│   │   └── users/ (CRUD)
-├── components/
-│   ├── Table.tsx
-│   └── Form.tsx
-├── lib/
-│   └── prisma.ts
-├── styles/
+│   │   └── agricultores/ (CRUD)
 ├── prisma/
 │   └── schema.prisma
 ```
-
-## 📸 Capturas de Tela
-
-*Adicione aqui prints do sistema para demonstrar as funcionalidades.*
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT.
-
----
 
 Desenvolvido por [@DevPeress](https://github.com/DevPeress) 💜
